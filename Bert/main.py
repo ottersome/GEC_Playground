@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 import torch
+import evaluate
 import wandb
 from datetime import date,datetime
 from transformers import (AutoModelForSequenceClassification,
@@ -31,6 +32,14 @@ def collator(examples: List[Dict[str,torch.Tensor]]):
     return batch
 
 
+def evaluation_callback():
+    # We Do Some Accuacy
+    pass
+    # We Do Confussion Matrix
+    # F1 Score (???)
+
+
+
 if __name__ == '__main__':
 
     # Load Arguments
@@ -47,15 +56,18 @@ if __name__ == '__main__':
     id2label = {idx:label for idx,label in enumerate(labels)}
     label2id = {label:idx for idx,label in enumerate(labels)}
 
+    # Evaluate Accuracy Metric
+    accuracy = evaluate.load("accuracy")
 
     # Load Model
+    device = torch.device('cuda')
     model= AutoModelForSequenceClassification.from_pretrained(
             'bert-base-cased',
             problem_type='multi_label_classification',
             num_labels=len(labels),
             id2label=id2label,
-            label2id=label2id
-        )
+            label2id=label2id,
+        ).to(device)
     #
     # Initialize Reporter
     wandb.init(project ='multilabeler', config=model.config)
@@ -76,7 +88,7 @@ if __name__ == '__main__':
             logging_steps=5,
             save_strategy="steps",
             report_to='wandb',
-            eval_steps=12,
+            eval_steps=50,
             save_steps=3000,
             run_name=run_name,
             save_total_limit=2
@@ -93,6 +105,9 @@ if __name__ == '__main__':
         )
 
     trainer.train()
+
+    # Save The Final Thing
+    model.push_to_hub("ottersome/ge_sees", use_auth_token=True)
 
     # Datasets
     #   Create Split

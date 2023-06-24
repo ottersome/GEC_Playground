@@ -30,10 +30,11 @@ def load_data(args,tokenizer):
     ds_lbt = pathlib.Path(args.bin_ds_path+'_train.bin')# Local Binary Train
     ds_lbv = pathlib.Path(args.bin_ds_path+'_test.bin')# Local Binary Test
     df_path = pathlib.Path(args.ds_path)
+    #
     # Assuming Those Work:
     if ds_lbt.exists() and ds_lbv.exists():
         print('Found Binary. Loading from binary...')
-        # We just Load the datasets
+        # We just Load prepped binary datasets
         train_ds = LabelDataset(tokenizer,bin_path=str(ds_lbt))
         test_ds = LabelDataset(tokenizer,bin_path=str(ds_lbv))
     else:
