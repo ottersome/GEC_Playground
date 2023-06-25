@@ -4,10 +4,9 @@ import torch
 import evaluate
 import wandb
 from datetime import date,datetime
-from sklearn.metrics import f1_score, roc_auc_score, accuracy_score
+from Torch
 from torch.utils.data import DataLoader, Dataset, RandomSampler, SequentialSampler
 from transformers import (AutoModelForSequenceClassification,
-    EvalPrediction,
     TrainingArguments,
     TrainerState,
     Trainer,
@@ -17,7 +16,6 @@ from utils import *
 from torch.nn.utils.rnn import pad_sequence
 
 
-threshold = 0.5
 
 def collator(examples: List[Dict[str,torch.Tensor]]):
     batch = {}
@@ -36,33 +34,11 @@ def collator(examples: List[Dict[str,torch.Tensor]]):
     return batch
 
 
-def eval_metrics(p: EvalPrediction):
-    # Separete
-    predictions, labels = (torch.Tensor(p.predictions), torch.Tensor(p.label_ids))
-    # Apply Sigmoid to Logits
-    sigmoid = torch.nn.Sigmoid()
-    pred_probs = sigmoid(predictions)
-    # Get those above threshodl
-    pred_binary = (pred_probs > threshold).to(torch.float32)
-
-    # True Values
-    true_labels = labels
-
-    # Compute Metrics
-    # Macro Aerage
-    f1_macro = f1_score(y_true=true_labels, y_pred=pred_binary, average='macro')
-    roc_auc = roc_auc_score(true_labels, pred_binary, average='macro')
-    accuracy = accuracy_score(true_labels,pred_binary)
-
-    metrics = {
-        'f1':f1_macro,
-        'roc_auc':roc_auc,
-        'accuracy':accuracy
-            }
-    return metrics
-
-
-
+def evaluation_callback():
+    # We Do Some Accuacy
+    pass
+    # We Do Confussion Matrix
+    # F1 Score (???)
 
 
 
@@ -130,12 +106,21 @@ if __name__ == '__main__':
         args=training_args,
         # optimizers=(optimizer,scheduler),
         train_dataset=ds_train,
-        compute_metrics=eval_metrics,
+        #compute_metrics=my_compute_metrics,
         eval_dataset=ds_test
         )
 
     trainer.train()
 
+    # Do the Training Here
+    epoch_progress = tqdm(range(args.num_epochs))
+    for i in epoch_progress:
+        steps = len(train_dataloader)
+        batch_tqdm = tqdm(train_dataloader, desc="Training Step")# TODO maybe add arguments for resuming checkpoint 
+        for batch in batch_tqdm:
+            # Input and Labels
+            #
+        
 
     # Save The Final Thing
     model.push_to_hub("ottersome/ge_sees", use_auth_token=True)

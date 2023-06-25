@@ -10,10 +10,15 @@ def tokenize_dataset(df:pd.DataFrame, tokenizer: BertTokenizer):
     examples = []
     # We assume a particular layout for our data
     #print(df)
+    # Go Through all DataFrame
     for idx,row in df.iterrows():
         # This give us dictionary
+        ### X ###
+        ## Tokenizer returns a dictionary
         inpt = tokenizer(row['source'])
+        ### Y ###
         lbls = np.array(row.values[2:],dtype=np.float32)
+        # To dictionary we add labels key
         inpt['labels'] =  torch.tensor(lbls,dtype=torch.float64)
         # TODO: this wastes space with having dictionaries wre they are not needed. 
         examples.append(inpt)
@@ -29,6 +34,8 @@ class LabelDataset(torch.utils.data.Dataset):
         binlocal_path = pathlib.Path(bin_path)
         if binlocal_path.exists() and binlocal_path.is_file():
             local_file = binlocal_path.open('rb')
+            print('We found an existing binary file at:')
+            print('\t',binlocal_path)
             self.text_labels,self.samples = pickle.load(local_file)
         elif isinstance(df,pd.DataFrame):
             # We have to create, we override what was previously wrriten
