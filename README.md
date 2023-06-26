@@ -5,5 +5,5 @@ Mostly using BERTs `[CLS]` to induce classification.
 
 The datasets used so far are:
 
-1. ![wi-locness](https://paperswithcode.com/dataset/locness-corpus)
-2. ![cola](https://nyu-mll.github.io/CoLA/)
+1. ![https://paperswithcode.com/dataset/locness-corpus](wi-locness)
+2. ![https://nyu-mll.github.io/CoLA/](CoLA)
