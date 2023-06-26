@@ -8,6 +8,19 @@ from collections import OrderedDict
 
 hist = OrderedDict()
 
+norm_dict = {
+            ' .': '.',
+            ' -': '-',
+            '- ': '-',
+            " '": "'",
+            " n'": "n'",
+            ' _': '_',
+            ' ,': ',',
+            ' :': ':',
+            ' ;': ';',
+            ' ?': '?',
+            ' !': '!' }
+
 def argsyparsy():
     argparser = argparse.ArgumentParser()
     argparser.add_argument(
@@ -29,7 +42,9 @@ def get_files_in_dir(dire:pathlib.Path):
     listo = []
     for f in dire.iterdir():
         # HARD CODING ABC After realizing my mistake
-        if 'train' in f.name and 'ABC' in f.name and f.name[0] != '.':
+        #if 'train' in f.name and 'ABC' in f.name and f.name[0] != '.':
+        if 'ABC' in f.name and f.name[0] != '.':
+            print('Adding ',f.name, ' to our files')
             listo.append(f)
     return listo
 
@@ -61,7 +76,11 @@ def collect_examples_in_file(file_path:pathlib.Path):
             line = f.readline()
             if line == '': break # EOF 
             assert line[0] == 'S'
+            # For some reason we get " ." in the sentences
             src_sentence = line[2:]
+            for k,v in norm_dict.items(): 
+                src_sentence = src_sentence.replace(k,v)
+            src_sentence.strip()
             
             line = f.readline()
             err_types = []
