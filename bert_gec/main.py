@@ -69,7 +69,7 @@ if __name__ == '__main__':
     
     # Load Dataset
     print('Loading Data')
-    tokenizer=AutoTokenizer.from_pretrained('bert-base-cased')
+    tokenizer=AutoTokenizer.from_pretrained('bert-large-cased')
     ds_train,ds_test = load_data(args,tokenizer)
     labels = ds_train.get_labels()
     print('Working with labels:\n', labels)
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     # Load Model
     device = torch.device('cuda')
     model= BertForSequenceClassification.from_pretrained(
-            'bert-base-cased',
+            'bert-large-cased',
             problem_type='multi_label_classification',
             num_labels=len(labels),
             id2label=id2label,
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         ).to(device)
     #
     # Initialize Reporter
-    wandb.init(project ='multilabeler', config=model.config)
+    wandb.init(project ='bert-large-uncased', config=model.config)
     ##################################
     # Train Loop
     ##################################

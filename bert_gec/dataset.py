@@ -17,7 +17,7 @@ def tokenize_dataset(df:pd.DataFrame, tokenizer: BertTokenizer):
         ### X ###
         ## Tokenizer returns a dictionary
         inpt = tokenizer('[CLS]'+row['source'])
-        print(inpt)
+        #  print(inpt)
         ### Y ###
         lbls = np.array(row.values[2:],dtype=np.float32)
         # To dictionary we add labels key
